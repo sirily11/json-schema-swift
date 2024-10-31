@@ -5,6 +5,9 @@ import SwiftJSONSchema
 struct Item {
     @Property(description: "The name of the person", example: "Some name")
     var name: String
+
+    @Property(description: "", example: 1)
+    var age: Int
 }
 
 @Schema
