@@ -76,7 +76,7 @@ extension JSONSchemaMacro {
             }
 
             if let example = property.example {
-                schema += ",\n\(generateTabs(depth: depth))\"example\": \"\(example)\""
+                schema += ",\n\(generateTabs(depth: depth))\"example\": \(example)"
             }
 
             if let defaultValue = property.defaultValue {
@@ -139,6 +139,7 @@ extension JSONSchemaMacro {
 // MARK: - Extract properties
 
 extension JSONSchemaMacro {
+    /// Extracts the example value from the @Property macro
     private static func extractExample(from attributeList: AttributeListSyntax?) -> String? {
         guard let attributes = attributeList else { return nil }
         for attribute in attributes {
@@ -147,12 +148,19 @@ extension JSONSchemaMacro {
                   let arguments = attr.arguments?.as(LabeledExprListSyntax.self),
                   let exampleArg = arguments.first(where: { argument in
                       argument.label?.text == "example"
-                  })?.expression.as(StringLiteralExprSyntax.self)
+                  })?.expression
             else {
                 continue
             }
-
-            return exampleArg.segments.description.trimmingCharacters(in: .whitespaces)
+            if let stringLiteral = exampleArg.as(StringLiteralExprSyntax.self) {
+                return "\"\(stringLiteral.segments.description)\""
+            } else if let integerLiteral = exampleArg.as(IntegerLiteralExprSyntax.self) {
+                return integerLiteral.literal.text
+            } else if let floatLiteral = exampleArg.as(FloatLiteralExprSyntax.self) {
+                return floatLiteral.literal.text
+            } else if let booleanLiteral = exampleArg.as(BooleanLiteralExprSyntax.self) {
+                return booleanLiteral.literal.text
+            }
         }
         return nil
     }

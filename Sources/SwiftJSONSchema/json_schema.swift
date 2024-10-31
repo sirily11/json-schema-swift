@@ -32,4 +32,4 @@ public protocol JSONSchemaRepresentable {
 public macro Schema() = #externalMacro(module: "SwiftJSONSchemaMacros", type: "JSONSchemaMacro")
 
 @attached(peer)
-public macro Property(description: String, example: String? = nil) = #externalMacro(module: "SwiftJSONSchemaMacros", type: "SchemaDescriptionMacro")
+public macro Property(description: String, example: Any? = nil) = #externalMacro(module: "SwiftJSONSchemaMacros", type: "SchemaDescriptionMacro")
